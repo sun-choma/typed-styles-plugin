@@ -1,0 +1,117 @@
+/* ============== VARIANTS ============= */
+
+/* @variants syntax examples */
+@variants size {
+    /* styles declared on this level will be applied to all variants */
+    padding-left: 12px;
+    padding-right: 12px;
+
+    @variant sm {
+        height: 24px;
+    }
+    @variant md {
+        height: 32px;
+    }
+    @variant lg {
+        height: 48px;
+    }
+}
+
+@variants variant {
+    border-radius: 8px;
+    color: black;
+
+    @variant primary {
+        background: aquamarine;
+    }
+    @variant secondary {
+        background: aliceblue;
+    }
+}
+
+/* ============== SWITCH ============= */
+
+/* @switch syntax examples */
+@switch is-loading {
+    padding: 4px;
+    width: 20px;
+    height: 20px;
+}
+
+@switch is-disabled {
+    color: gray;
+}
+
+/* ============== COMBINE ============= */
+
+/* @combine syntax example (combination of variant and switch) */
+@combine variants(size: sm, is-loading: off) {
+    color: tomato;
+}
+
+/* @combine syntax is designed to be used with multiple parameters
+rules with insufficient arguments will be removed */
+@combine variants(size: sm) {
+    color: tomato;
+}
+
+/* parameters order doesn't matter: this would give the same output as the first example */
+@combine variants(is-loading: off, size: sm) {
+    color: tomato;
+}
+
+/* In order to use off switch @variant or 'on' switch is required
+(due to off switch using :not() pseudo-class)
+following styles would be processed correctly: */
+@combine variants(is-loading: off, is-disabled: off, variant: primary) {
+    display: block;
+}
+@combine variants(is-loading: on, is-disabled: off) {
+    p {
+        display: block;
+    }
+}
+/* while following style would be silently removed (in robust mode) or an error will be thrown (in strict mode)*/
+@combine variants(is-loading: on, is-disabled: off) {
+    p {
+        display: block;
+    }
+}
+
+/* in order to combine multiple variants 'some()' function may be used */
+/* in this example styles will be applied to both 'size: md' and 'size: lg' when 'is-loading' is true */
+@combine variants(size: some(md, lg), is-loading: on) {
+    p {
+        display: none;
+    }
+}
+
+/* note: following syntax is considered incorrect, use 'some()' instead */
+/* variant keys can't be repeated */
+@combine variants(size: md, size: lg, is-loading: on) {
+    p {
+        display: none;
+    }
+}
+
+/* it is possible to call multiple some() functions for different variants */
+@combine variants(size: some(md, lg), is-loading: on, variant: some(primary, secondary)) {
+    p {
+        display: none;
+    }
+}
+
+/* in order to enumerate every possible variant 'all' keyword can be used
+this will apply additional styles to .size-sm, .size-md, .size-lg when is-loading is on */
+@combine variants(size: all, is-loading: on) {
+    p {
+        display: none;
+    }
+}
+
+/* note: 'all' keyword can't be used with switches */
+@combine variants(size: all, is-loading: all) {
+    .icon {
+        display: none;
+    }
+}

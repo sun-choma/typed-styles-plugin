@@ -1,0 +1,96 @@
+/* ============== VARIANTS ============= */
+
+.size--sm {
+    height: 24px
+}
+
+.size--md {
+    height: 32px
+}
+
+.size--lg {
+    height: 48px
+}
+
+:where(.size--sm,.size--md,.size--lg) {
+    padding-left: 12px;
+    padding-right: 12px
+}
+
+.variant--primary {
+    background: aquamarine
+}
+
+.variant--secondary {
+    background: aliceblue
+}
+
+:where(.variant--primary,.variant--secondary) {
+    border-radius: 8px;
+    color: black
+}
+
+/* ============== SWITCH ============= */
+
+:where(.is-loading) {
+    padding: 4px;
+    width: 20px;
+    height: 20px
+}
+
+:where(.is-disabled) {
+    color: gray
+}
+
+/* ============== COMBINE ============= */
+
+/* @combine syntax example (combination of variant and switch) */
+.size--sm:not(.is-loading) {
+    color: tomato;
+}
+
+/* @combine syntax is designed to be used with multiple parameters
+rules with insufficient arguments will be removed */
+
+/* parameters order doesn't matter: this would give the same output as the first example */
+.size--sm:not(.is-loading) {
+    color: tomato;
+}
+
+/* In order to use off switch @variant or 'on' switch is required
+(due to off switch using :not() pseudo-class)
+following styles would be processed correctly: */
+.variant--primary:not(.is-loading), :not(.is-disabled) {
+    display: block;
+}
+
+.is-loading:not(.is-disabled) p {
+    display: block;
+}
+
+/* while following style would be silently removed (in robust mode) or an error will be thrown (in strict mode)*/
+.is-loading:not(.is-disabled) p {
+    display: block;
+}
+
+/* in order to combine multiple variants 'some()' function may be used */
+/* in this example styles will be applied to both 'size: md' and 'size: lg' when 'is-loading' is true */
+:is(.size--md,.size--lg).is-loading p {
+    display: none;
+}
+
+/* note: following syntax is considered incorrect, use 'some()' instead */
+/* variant keys can't be repeated */
+
+/* it is possible to call multiple some() functions for different variants */
+:is(.size--md,.size--lg).is-loading:is(.variant--primary,.variant--secondary) p {
+    display: none;
+}
+
+/* in order to enumerate every possible variant 'all' keyword can be used
+this will apply additional styles to .size-sm, .size-md, .size-lg when is-loading is on */
+:is(.size--sm,.size--md,.size--lg).is-loading p {
+    display: none;
+}
+
+/* note: 'all' keyword can't be used with switches */

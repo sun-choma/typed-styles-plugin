@@ -1,0 +1,159 @@
+@define-mixin pressed {
+    &:active:not(:disabled) {
+        @mixin-content;
+    }
+}
+@define-mixin hovered {
+    &:hover:not(:disabled) {
+        @mixin-content;
+    }
+}
+
+
+// Used to change buttons appearance
+@variants variant {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    transition-property: transform, box-shadow, color, background-color;
+    transition-duration: .1s;
+    transition-timing-function: ease-out;
+
+    cursor: pointer;
+
+    gap: 4px;
+
+    &:active {
+        transform: scale(.98);
+    }
+
+    &:disabled {
+        transform: unset;
+        cursor: not-allowed;
+    }
+
+    // Used for most important (primary) actions
+    @variant contained {
+        color: #fff;
+        background: #5755FF;
+        border: none;
+
+        @mixin hovered {
+            background: #7A78FF;
+        }
+
+        @mixin pressed {
+            background: #2826C1;
+        }
+    }
+
+    // Used for secondary actions
+    @variant outlined {
+        color: #605EFF;
+        border: 1px solid #605EFF;
+        background: transparent;
+
+        @mixin hovered {
+            background: #F4F3FF;
+            color: #7D7BFF;
+            border-color: #7D7BFF;
+        }
+
+        @mixin pressed {
+            background: #D5D2FF;
+            color: #2826C1;
+            border-color: #2826C1;
+        }
+    }
+
+    // Used for uncommon (tertiary) actions
+    @variant texted {
+        color: #605EFF;
+        border: none;
+        background: transparent;
+
+        @mixin hovered {
+            background: #F4F3FF;
+            color: #7D7BFF;
+        }
+
+        @mixin pressed {
+            background: #D5D2FF;
+            color: #2826C1;
+        }
+    }
+
+    // Button without any visual styles. Used as a part of complex components
+    @variant unstyled {
+        color: unset;
+        background: unset;
+        border: none;
+    }
+}
+
+// State signalizing that button is being disabled due to some action is being processed
+@switch is-loading {
+    // No styles are being declared due to switch being used only in combinations
+}
+
+
+@combine variants(variant: all, is-loading: off) {
+    &:disabled {
+        color: #999BA8;
+        background: #DDDEDF;
+    }
+}
+
+// Sizes of a button
+@variants size {
+    padding: 0 30px;
+
+    &:has(.icon) {
+        padding: 0 24px;
+    }
+
+    &:has(.icon:only-child) {
+        padding: 0 16px;
+    }
+
+    & .icon {
+        flex-shrink: 0;
+    }
+
+    // Small button - somewhat difficult to notice
+    @variant sm {
+        height: 32px;
+        font-size: 12px;
+        border-radius: 12px;
+
+        & .icon {
+            width: 12px;
+            height: 12px;
+        }
+    }
+
+    // Medium button - goto option in most scenarios
+    @variant md {
+        height: 48px;
+        font-size: 16px;
+        border-radius: 18px;
+
+        & .icon {
+            width: 16px;
+            height: 16px;
+        }
+    }
+
+    // Large button - if additional pop is needed
+    @variant lg {
+        height: 64px;
+        font-size: 20px;
+        border-radius: 20px;
+
+        & .icon {
+            width: 20px;
+            height: 20px;
+        }
+    }
+}
